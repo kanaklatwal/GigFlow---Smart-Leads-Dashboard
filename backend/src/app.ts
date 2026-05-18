@@ -14,5 +14,5 @@ app.use(
 app.use(
     "/api/leads",
     leadRoutes
-   );
+);
 export default app;
