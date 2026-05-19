@@ -57,14 +57,14 @@ router.route("/:id")
 router.put(
     "/:id/assign",
     protect,
-    authorize("admin"),
+    authorize("admin","sales"),
     assignLead
 );
 
 router.put(
     "/:id/status",
     protect,
-    authorize("admin"),
+    authorize("admin", "sales"),
     updateLeadStatus
 );
 
