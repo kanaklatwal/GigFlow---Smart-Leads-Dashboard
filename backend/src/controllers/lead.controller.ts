@@ -141,3 +141,35 @@ export const getLeadById = async(
   }
  
  };
+
+ export const assignLead = async(
+  req:Request,
+  res:Response
+ )=>{
+ 
+  try{
+ 
+  const { userId } = req.body;
+ 
+  const lead = await Lead.findByIdAndUpdate(
+    req.params.id,
+    { assignedTo:userId },
+    { new:true }
+  ).populate("assignedTo","name email");
+ 
+  if(!lead){
+    return res.status(404).json({
+       message:"Lead not found"
+    });
+  }
+ 
+  res.json(lead);
+ 
+  }catch{
+ 
+    res.status(500).json({
+       message:"Server Error"
+    });
+  }
+ 
+ };

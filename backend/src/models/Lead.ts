@@ -34,7 +34,7 @@ const leadSchema = new Schema(
 
  status:{
    type:String,
-   enum:["new","contacted","qualified"],
+   enum:["new","contacted","qualified", "closed"],
    default:"new"
  },
 
