@@ -173,3 +173,74 @@ export const getLeadById = async(
   }
  
  };
+
+ export const updateLeadStatus = async(
+  req:Request,
+  res:Response
+ )=>{
+ 
+  try{
+ 
+  const { status } = req.body;
+ 
+  const lead = await Lead.findByIdAndUpdate(
+    req.params.id,
+    { status },
+    { new:true }
+  );
+ 
+  if(!lead){
+    return res.status(404).json({
+       message:"Lead not found"
+    });
+  }
+ 
+  res.json(lead);
+ 
+  }catch{
+ 
+    res.status(500).json({
+       message:"Server Error"
+    });
+ 
+  }
+ 
+ };
+
+ export const getLeadStats = async(
+  req:Request,
+  res:Response
+ )=>{
+ 
+  try{
+ 
+  const total = await Lead.countDocuments();
+ 
+  const newLeads = await Lead.countDocuments({
+    status:"new"
+  });
+ 
+  const qualified = await Lead.countDocuments({
+    status:"qualified"
+  });
+ 
+  const closed = await Lead.countDocuments({
+    status:"closed"
+  });
+ 
+  res.json({
+    total,
+    new:newLeads,
+    qualified,
+    closed
+  });
+ 
+  }catch{
+ 
+    res.status(500).json({
+      message:"Server Error"
+    });
+ 
+  }
+ 
+ };

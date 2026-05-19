@@ -6,7 +6,9 @@ import {
     getLeadById,
     updateLead,
     deleteLead,
-    assignLead
+    assignLead,
+    updateLeadStatus,
+    getLeadStats
    } from "../controllers/lead.controller";
 
 import { protect } from "../middleware/auth.middleware";
@@ -25,6 +27,12 @@ router.route("/")
 .get(
  protect,
  getLeads
+);
+
+router.get(
+    "/stats",
+    protect,
+    getLeadStats
 );
 
 router.route("/:id")
@@ -52,5 +60,13 @@ router.put(
     authorize("admin"),
     assignLead
 );
+
+router.put(
+    "/:id/status",
+    protect,
+    authorize("admin"),
+    updateLeadStatus
+);
+
 
 export default router;
