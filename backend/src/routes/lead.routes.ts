@@ -8,7 +8,8 @@ import {
     deleteLead,
     assignLead,
     updateLeadStatus,
-    getLeadStats
+    getLeadStats,
+    exportLeadsCSV
    } from "../controllers/lead.controller";
 
 import { protect } from "../middleware/auth.middleware";
@@ -35,6 +36,15 @@ router.get(
     getLeadStats
 );
 
+router.get(
+    "/export/csv",
+    protect,
+    authorize(
+    "admin",
+    "sales"
+    ),
+    exportLeadsCSV
+);
 router.route("/:id")
 
 .get(

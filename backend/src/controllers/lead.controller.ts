@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import Lead from "../models/Lead";
-
+import { createObjectCsvStringifier } from "csv-writer";
 export const createLead = async (
  req: Request,
  res: Response
@@ -366,3 +366,59 @@ export const getLeadStats = async(
  }
 
 };
+
+export const exportLeadsCSV = async(
+  req:Request,
+  res:Response
+ )=>{
+ 
+  try{
+ 
+  const leads =
+  await Lead.find();
+ 
+  const csvStringifier =
+  createObjectCsvStringifier({
+ 
+  header:[
+ 
+  {id:"title",title:"Title"},
+  {id:"company",title:"Company"},
+  {id:"contactName",title:"Contact Name"},
+  {id:"email",title:"Email"},
+  {id:"status",title:"Status"}
+ 
+  ]
+ 
+  });
+ 
+  const header =
+  csvStringifier.getHeaderString();
+ 
+  const records =
+  csvStringifier.stringifyRecords(
+  leads
+  );
+ 
+  res.header(
+  "Content-Type",
+  "text/csv"
+  );
+ 
+  res.attachment(
+  "leads.csv"
+  );
+ 
+  return res.send(
+  header+records
+  );
+ 
+  }catch{
+ 
+  res.status(500).json({
+    message:"Server Error"
+  });
+ 
+  }
+ 
+ };

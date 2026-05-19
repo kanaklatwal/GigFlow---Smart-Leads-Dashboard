@@ -1,11 +1,12 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
+import User from "../models/User";
 
-interface JwtPayload {
+interface JwtPayload{
  id:string;
 }
 
-export const protect=(
+export const protect = async(
  req:Request,
  res:Response,
  next:NextFunction
@@ -14,34 +15,54 @@ export const protect=(
  let token;
 
  if(
-   req.headers.authorization &&
-   req.headers.authorization.startsWith("Bearer")
+ req.headers.authorization &&
+ req.headers.authorization.startsWith(
+ "Bearer"
+ )
  ){
 
-   token=req.headers.authorization.split(" ")[1];
+ token=
+ req.headers.authorization.split(
+ " "
+ )[1];
 
-   try{
+ try{
 
-     const decoded=jwt.verify(
-       token,
-       process.env.JWT_SECRET!
-     ) as JwtPayload;
+ const decoded=
+ jwt.verify(
+ token,
+ process.env.JWT_SECRET!
+ ) as JwtPayload;
 
-     (req as any).user=decoded;
+ const user=
+ await User.findById(
+ decoded.id
+ );
 
-     return next();
+ if(!user){
 
-   }catch{
+ return res.status(404).json({
+ message:"User not found"
+ });
 
-     return res.status(401).json({
-       message:"Token invalid"
-     });
-   }
+ }
+
+ (req as any).user=user;
+
+ return next();
+
+ }catch{
+
+ return res.status(401).json({
+ message:"Token invalid"
+ });
+
+ }
 
  }
 
  return res.status(401).json({
-   message:"No token"
+ message:"No token"
  });
 
 };
