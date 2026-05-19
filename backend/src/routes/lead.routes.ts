@@ -1,9 +1,12 @@
 import express from "express";
 
 import {
- createLead,
- getLeads
-} from "../controllers/lead.controller";
+    createLead,
+    getLeads,
+    getLeadById,
+    updateLead,
+    deleteLead
+   } from "../controllers/lead.controller";
 
 import { protect } from "../middleware/auth.middleware";
 
@@ -21,6 +24,25 @@ router.route("/")
 .get(
  protect,
  getLeads
+);
+
+router.route("/:id")
+
+.get(
+ protect,
+ getLeadById
+)
+
+.put(
+ protect,
+ authorize("admin"),
+ updateLead
+)
+
+.delete(
+ protect,
+ authorize("admin"),
+ deleteLead
 );
 
 export default router;
